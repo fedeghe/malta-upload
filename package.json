@@ -1,0 +1,23 @@
+{
+  "name": "malta-upload",
+  "packageManager": "yarn@4.12.0",
+  "version": "0.0.1",
+  "description": "Malta plugin to start file upload server",
+  "repository": {
+      "type": "git",
+      "url": "https://fedeghe@github.com/fedeghe/malta-upload.git"
+  },
+  "keywords": [
+      "malta",
+      "malta plugin",
+      "malta upload",
+      "malta upload file server",
+      "malta upload plugin"
+  ],
+  "author": "Federico Ghedina <fedeghe@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+      "url": "https://github.com/fedeghe/malta-upload/issues"
+  },
+  "main": "index.js"
+}
