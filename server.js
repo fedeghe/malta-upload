@@ -15,8 +15,8 @@ function startServer(port, folder, options) {
     const server = http.createServer((req, res) => {
         const corsHeaders = {
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, X-Filename'
+            'Access-Control-Allow-Methods': 'POST, PUT, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, X-Filename, Access-Control-Allow-Origin, Access-Control-Allow-Headers'
         };
 
         if (req.method === 'OPTIONS') {
@@ -25,7 +25,7 @@ function startServer(port, folder, options) {
             return;
         }
 
-        if (req.method !== 'POST') {
+        if (req.method !== 'POST' && req.method !== 'PUT') {
             res.writeHead(405, { ...corsHeaders, 'Content-Type': 'text/plain' });
             res.end('Method not allowed');
             return;
@@ -34,9 +34,8 @@ function startServer(port, folder, options) {
         let body = [];
         req.on('data', chunk => body.push(chunk));
         req.on('end', () => {
-            const filename = path.basename(req.headers['x-filename']) || 'upload',
+            const filename = path.basename(req.headers['x-filename'] || req.url) || 'upload',
                 dest = path.join(folder, filename);
-
             fs.writeFile(dest, Buffer.concat(body), err => {
                 if (err) {
                     res.writeHead(500, { ...corsHeaders, 'Content-Type': 'text/plain' });
@@ -45,11 +44,10 @@ function startServer(port, folder, options) {
                     console.dir(err);
                     return;
                 }
-
                 res.writeHead(200, { ...corsHeaders, 'Content-Type': 'text/plain' });
                 res.end('OK');
                 console.log('[' + pluginName + '] saved upload: ' + dest);
-
+                            
                 if (options.handler) {
                     let handler;
                     try {
@@ -86,7 +84,6 @@ function startServer(port, folder, options) {
         serverStarted = true;
         console.log('[' + pluginName + '] upload server started on http://127.0.0.1:' + port);
     });
-
     return server;
 }
 
