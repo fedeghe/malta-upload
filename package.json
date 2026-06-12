@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/fedeghe/malta-upload/issues"
   },
-  "main": "index.js"
+  "main": "index.js",
+  "dependencies": {
+    "selfsigned": "^2.4.1"
+  }
 }

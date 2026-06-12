@@ -20,14 +20,22 @@ function maltaUpload(obj, options) {
             return;
         }
 
+        const host = options.host || '127.0.0.1';
+        const protocol = options.ssl ? 'https' : 'http';
+
         const s = server.startServer(port, folder, {
             pluginName: pluginName,
             handler: options.handler,
-            self: self
+            self: self,
+            ssl: options.ssl,
+            key: options.key,
+            cert: options.cert,
+            host: host,
+            indexPath: path.resolve('index.html')
         });
 
         if (s) {
-            msg = 'plugin ' + pluginName.white() + ' upload server started on http://127.0.0.1:' + port;
+            msg = 'plugin ' + pluginName.white() + ' upload server started on ' + protocol + '://' + host + ':' + port;
         } else {
             msg = 'plugin ' + pluginName.white() + ' server already running on port ' + port;
         }
