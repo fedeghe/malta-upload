@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+      <style>
+      #canvas{
+        border: 1px solid #000;
+      }
+      </style>
+    </head>
+    <body>
+      <div id="border">
+        <svg id="canvas" width="500" height="400">
+        </svg>
+      </div>
+
+      <script>
+        /*Store the "svg" item in a variable */
+        const canvas = document.querySelector('#canvas');
+        //Class to store the position
+        class Vector2D{
+          constructor(x,y){
+            this.x = x;
+            this.y = y;
+          }
+        }
+
+        //Variables that will store the initial and final position of the line before its drawn.
+        let initialPosOfLine;
+        let finalPosOfLine;
+        //Variable to store the stage of the canvsa, if the user its drawing or not.
+        let drawingOverCanvas = false;
+        //Variable to store the current index of the line
+        let lineIndex = 0;
+
+        // Code that will be executed once the user click with the mouse in the svg.
+        canvas.addEventListener('mousedown', event => {
+          //If we are drawing, do nothing.
+          if(drawingOverCanvas) return;
+          /*Calculate position relative to div -- Done by https://stackoverflow.com/questions/3234256/find-mouse-position-relative-to-element */
+          var rect = canvas.getBoundingClientRect();
+          var x = event.clientX - rect.left; //x position within the element.
+          var y = event.clientY - rect.top;  //y position within the element.
+          //Change the variable drawingOverCanvas to true since now we are drawing
+          drawingOverCanvas = true;
+          //Store the mouse position over the div as the initialPos;
+          initialPosOfLine = new Vector2D(x , y);
+          //draw a line at the starting point;
+          drawToPos(initialPosOfLine, initialPosOfLine, 'line'+lineIndex , false);
+        });
+        // Code that will be executed once the user click with the mouse in the svg.
+        canvas.addEventListener('mouseup', event => {
+          //If we are not drawing, do nothing.
+          if(!drawingOverCanvas) return;
+          //Set the varible to "false" as we are not drawing now.
+          drawingOverCanvas = false;
+            /*Calculate position relative to div -- Done by https://stackoverflow.com/questions/3234256/find-mouse-position-relative-to-element */
+          var rect = canvas.getBoundingClientRect();
+          var x = event.clientX - rect.left; //x position within the element.
+          var y = event.clientY - rect.top;  //y position within the element.
+
+          //Store the final position as a vector.
+          finalPosOfLine = new Vector2D(x, y);
+
+          //Set the line to its correct position
+          drawToPos(initialPosOfLine, finalPosOfLine, 'line'+lineIndex , true);
+          //Increse the index of the line for the next one.
+          lineIndex++;
+        });
+
+        //Draw the line when the user move the mouse
+        canvas.addEventListener('mousemove', event => {
+          //if we are not drawing, do nothing.
+          if(!drawingOverCanvas) return;
+            /*Calculate position relative to div -- Done by https://stackoverflow.com/questions/3234256/find-mouse-position-relative-to-element */
+          var rect = canvas.getBoundingClientRect();
+          var x = event.clientX - rect.left; //x position within the element.
+          var y = event.clientY - rect.top;  //y position within the element.
+
+          //Store the mouse position as the "final" position
+          finalPosOfLine = new Vector2D(x, y);
+          //Draw a line from the initialPos to the current Mouse pos.
+          drawToPos(initialPosOfLine, finalPosOfLine, 'line'+lineIndex , true);
+        });
+
+        //Draw a line between 2 points, if move its true, it will move the line instead of making it
+        function drawToPos(initial, final, id, move){
+          //Declare a new Line in SVG
+          var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+
+          //If we are moving and existent line, set "line" to the current line, else, give to the new line the id attribute.
+          if(move){ line = document.querySelector('#'+id) } else { line.setAttribute('id',id) };
+          // If we are creating a new line, define its initial position
+          if(!move) line.setAttribute('x1',initial.x);
+          if(!move) line.setAttribute('y1',initial.y);
+          //Define its final position
+          line.setAttribute('x2',final.x);
+          line.setAttribute('y2',final.y);
+          //Define its stroke.
+          line.setAttribute("stroke", "black")
+          //Apend the line to the SVG canvas
+          canvas.append(line);
+        }
+      </script>
+    </body>
+    </html>

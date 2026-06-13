@@ -50,3 +50,14 @@ module.exports = function(self, {path, name, content}) {
     console.log(self); // this is the malta instance
 };
 ```
+### try it 
+    cd sample
+    malta start.json // or startSSL.json
+
+then
+- open your browser and visit http://127.0.0.1:3434  
+(or https://127.0.0.1:3434 in case u started the SSL version; you will have to accept the certificate first)
+- upload a file
+- check the `sample/up` folder content, and the log in the console coming from the `sample/handler.js`
+
+

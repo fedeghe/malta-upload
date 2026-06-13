@@ -21,6 +21,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "malta": "^4.1.49",
     "selfsigned": "^2.4.1"
   }
 }

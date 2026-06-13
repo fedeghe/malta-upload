@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+</head>
+<body>
+    <h1>Upload a file</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+    <div id="message"></div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files.length) {
+                message.textContent = 'Select a file before uploading';
+                return;
+            }
+
+            const file = fileInput.files[0];
+
+            message.textContent = 'Uploading...';
+
+            try {
+                const response = await fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'X-Filename': file.name
+                    },
+                    body: file
+                });
+
+                if (response.ok) {
+                    message.textContent = 'File successfully uploaded!';
+                } else {
+                    message.textContent = 'Error during upload: ' + response.status + ' ' + response.statusText;
+                }
+            } catch (error) {
+                message.textContent = 'Network error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
